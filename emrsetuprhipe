@@ -1,0 +1,148 @@
+# sudo apt-get -y update
+# sudo apt-get -y install pkg-config
+
+# ?
+# sudo chmod -R aou=rwx  /usr/local/lib/R/site-library
+# sudo chmod -R aou=rwx /usr/lib/R/site-library/rJava
+
+## protobuf
+wget https://protobuf.googlecode.com/files/protobuf-2.4.1.tar.bz2
+tar jxvf protobuf-2.4.1.tar.bz2
+cd protobuf-2.4.1
+./configure && make -j3
+sudo make install
+cd ..
+
+# java
+echo '/usr/lib/jvm/java-7-oracle/jre/lib/amd64/server/' | sudo tee -a  /etc/ld.so.conf.d/jre.conf
+echo '/usr/lib/jvm/java-7-oracle/jre/lib/amd64/' | sudo tee -a  /etc/ld.so.conf.d/jre.conf
+echo '/home/hadoop/lib64' | sudo tee -a  /etc/ld.so.conf.d/hadoop.conf
+sudo ldconfig
+
+# hadoop config
+export HADOOP=/home/hadoop
+export HADOOP_HOME=/home/hadoop/
+export HADOOP_CONF_DIR=/home/hadoop/conf
+export HADOOP_LIBS=/home/hadoop:/home/hadoop/lib
+
+rm -rf /home/hadoop/.versions/hive-0.11.0/hcatalog/share/webhcat/svr/lib/xercesImpl-2.6.1.jar 
+
+### INSTALL R ###
+## installed in local directory need to change PATH variable
+wget http://cran.rstudio.com/src/base/R-3/R-3.1.0.tar.gz
+tar zxvf R-3.1.0.tar.gz
+cd R-3.1.0
+./configure --enable-R-shlib && make -j4
+sudo make install
+export PATH=/home/hadoop/R-3.1.0/bin/:$PATH
+sudo chmod -R aou=rwx  /usr/local/lib/R/site-library
+sudo chmod -R aou=rwx /usr/lib/R/site-library/rJava
+sudo chmod -R aou=rwx  /usr/local/lib64/R/library
+
+
+wget http://cran.r-project.org/src/contrib/rJava_0.9-6.tar.gz
+R CMD INSTALL rJava_0.9-6.tar.gz
+
+### SHINY
+wget http://www.cmake.org/files/v2.8/cmake-2.8.12.2-Linux-i386.tar.gz
+tar xzvf cmake-2.8.12.2-Linux-i386.tar.gz
+sudo su - -c "/home/hadoop/R-3.1.0/bin/R -e \"install.packages('shiny', repos='http://cran.rstudio.com/')\""
+
+# Clone the repository from GitHub
+git clone https://github.com/rstudio/shiny-server.git
+
+# Get into a temporary directory in which we'll build the project
+cd shiny-server
+mkdir tmp
+cd tmp
+
+# Add the bin directory to the path so we can reference node
+DIR=`pwd`
+PATH=$PATH:$DIR/../bin/
+
+# See the "Python" section below if your default python version is not 2.6 or 2.7. 
+PYTHON=`which python`
+
+# Check the version of Python. If it's not 2.6.x or 2.7.x, see the Python section below.
+$PYTHON --version
+
+# Use cmake to prepare the make step. Modify the "--DCMAKE_INSTALL_PREFIX"
+# if you wish the install the software at a different location.
+/home/hadoop/cmake-2.8.12.2-Linux-i386/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DPYTHON="$PYTHON" ../
+# Get an error here? Check the "How do I set the cmake Python version?" question below
+
+# Recompile the npm modules included in the project
+make -j4
+mkdir ../build
+(cd .. && bin/npm --python="$PYTHON" rebuild)
+# Need to rebuild our gyp bindings since 'npm rebuild' won't run gyp for us.
+(cd .. && ext/node/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js --python="$PYTHON" rebuild)
+
+# Install the software at the predefined location
+sudo make install
+
+# POST INSTALL
+# Place a shortcut to the shiny-server executable in /usr/bin
+sudo ln -s /usr/local/shiny-server/bin/shiny-server /usr/bin/shiny-server
+
+#Create shiny user. On some systems, you may need to specify the full path to 'useradd'
+sudo useradd -r -m shiny
+
+# Create log, config, and application directories
+sudo mkdir -p /var/log/shiny-server
+sudo mkdir -p /srv/shiny-server
+sudo mkdir -p /var/lib/shiny-server
+sudo chown shiny /var/log/shiny-server
+sudo mkdir -p /etc/shiny-server
+
+## need to get default config and start service
+wget https://github.com/rstudio/shiny-server/blob/master/config/default.config
+sudo cp default.config 
+sudo -u shiny shiny-server
+sudo cp ./shiny-server/config/default.config /etc/shiny-server/shiny-server.conf
+#### END SHINY ###
+
+
+
+
+
+## RHIPE
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+wget http://people.mozilla.com/~sguha/Rhipe_0.74.0_hadoop-1.tar.gz 
+R CMD INSTALL Rhipe_0.74.0_hadoop-1.tar.gz 
+rm -rf /home/hadoop/.versions/hive-0.11.0/hcatalog/share/webhcat/svr/lib/xercesImpl-2.6.1.jar 
+
+sudo apt-get install gdebi-core
+wget http://download2.rstudio.org/rstudio-server-0.98.507-amd64.deb
+#add auto-yes
+sudo gdebi rstudio-server-0.98.507-amd64.deb 
+# shiny
+#https://github.com/rstudio/shiny-server/wiki/Building-Shiny-Server-from-Source
+# rstudio server
+# dev tools
+# datadr trelliscope
+## devtools
+# sudo apt-get install curl
+sudo -E apt-get --yes --force-yes install libcurl4-openssl-dev
+
+sudo su - -c "/home/hadoop/R-3.1.0/bin/R -e \"install.packages('devtools', repos='http://cran.rstudio.com/')\""
+## datadr
+sudo su - -c "/home/hadoop/R-3.1.0/bin/R -e \"options(repos = 'http://cran.rstudio.com/'); library(devtools); install_github('datadr', 'hafen')\""
+## trelliscope
+sudo su - -c "/home/hadoop/R-3.1.0/bin/R -e \"options(repos = 'http://cran.rstudio.com/'); library(devtools); install_github('trelliscope', 'hafen')\""
+
+# rstudio and shiny only running on namenode
+#
+
+## rjson, data.table, zoo,
+# wget http://cran.r-project.org/src/contrib/rjson_0.2.13.tar.gz
+# R CMD INSTALL rjson_0.2.13.tar.gz
+# wget http://cran.r-project.org/src/contrib/data.table_1.9.2.tar.gz
+# R CMD INSTALL data.table_1.9.2.tar.gz
+# wget http://cran.r-project.org/src/contrib/zoo_1.7-11.tar.gz
+# R CMD INSTALL zoo_1.7-11.tar.gz
+
+echo 'export HADOOP=/home/hadoop'| sudo tee -a /home/hadoop/.bash_profile
+echo 'export HADOOP_HOME=/home/hadoop/' | sudo tee -a /home/hadoop/.bash_profile
+echo 'export HADOOP_CONF_DIR=/home/hadoop/conf' | sudo tee -a /home/hadoop/.bash_profile
+echo 'export HADOOP_LIBS=/home/hadoop:/home/hadoop/lib'| sudo tee -a /home/hadoop/.bash_profile
