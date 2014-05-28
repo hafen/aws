@@ -1,7 +1,9 @@
 #!/bin/bash
 
 echo "deb http://cran.rstudio.com/bin/linux/ubuntu precise/" | sudo tee -a /etc/apt/sources.list
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E084DAB9
+
+# sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E084DAB9
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 06F90DE5381BA480
 
 sudo -E apt-get --yes --force-yes update
 sudo -E apt-get --yes install vim
@@ -39,7 +41,7 @@ sudo chown -R shiny:shiny /srv/shiny-server/examples
 ## system dependencies
 sudo -E apt-get --yes --force-yes install libcurl4-openssl-dev
 sudo -E apt-get --yes --force-yes install libxml2-dev
-sudo -E apt-get --yes --force-yes install mongodb
+# sudo -E apt-get --yes --force-yes install mongodb
 sudo -E apt-get --yes --force-yes install openjdk-6-jdk
 #wget --no-check-certificate https://github.com/aglover/ubuntu-equip/raw/master/equip_java7_64.sh && bash equip_java7_64.sh
 sudo su - -c "R -e \"install.packages('rJava', repos='http://cran.rstudio.com/')\""
@@ -65,7 +67,7 @@ sudo su - -c "R -e \"options(repos = 'http://cran.rstudio.com/'); library(devtoo
 #### git
 sudo -E apt-get --yes --force-yes install git
 
-sudo rm -rf ~/*
+#sudo rm -rf ~/*
 
 
 #### java environment variables from javareconf
@@ -85,3 +87,5 @@ sudo echo 'export JAVAH=/usr/bin/javah' | sudo tee -a /etc/bash.bashrc
 sudo echo 'export JAVA_LD_LIBRARY_PATH=/usr/lib/jvm/java-6-openjdk-amd64/jre/lib/amd64/server' | sudo tee -a /etc/bash.bashrc
 sudo echo 'export JAVA_LIBS=-L/usr/lib/jvm/java-6-openjdk-amd64/jre/lib/amd64/server' | sudo tee -a /etc/bash.bashrc
 sudo echo 'export JAVA=/usr/bin/java' | sudo tee -a /etc/bash.bashrc
+
+sudo R CMD INSTALL Rhipe_0.75.0_cdh3.tar.gz

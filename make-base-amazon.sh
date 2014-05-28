@@ -7,7 +7,8 @@ sudo yum -y update
 sudo yum -y install R
 
 wget http://download2.rstudio.org/rstudio-server-0.98.507-x86_64.rpm
-sudo yum -y install libgfortran
+wget ftp://195.220.108.108/linux/Mandriva/official/2008.0/x86_64/media/main/release/libgfortran1-4.1.2-1mdv2007.1.x86_64.rpm
+sudo yum -y install --nogpgcheck libgfortran1-4.1.2-1mdv2007.1.x86_64.rpm
 sudo yum -y install --nogpgcheck rstudio-server-0.98.507-x86_64.rpm
 echo "manual" | sudo tee /etc/init/rstudio-server.override
 sudo useradd rstudio
@@ -16,7 +17,7 @@ sudo mkdir /home/rstudio
 sudo chmod -R 0777 /home/rstudio
 
 sudo su - -c "R -e \"install.packages('shiny', repos='http://cran.rstudio.com/')\""
-wget http://download3.rstudio.org/centos-6.3/x86_64/shiny-server-1.1.0.10000-x86_64.rpm
+wget http://download3.rstudio.org/centos-6.3/x86_64/shiny-server-1.2.0.342-x86_64.rpm
 sudo yum -y install --nogpgcheck shiny-server-1.1.0.10000-x86_64.rpm
 echo "manual" | sudo tee /etc/init/shiny-server.override
 
