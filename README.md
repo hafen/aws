@@ -11,7 +11,7 @@
 *****
 * Copy all emr-2.4.2/install-* scripts to your S3 Bucket (ignore the Rhipe-*tar.gz)  
 * Edit the command below replacing **bucket** with your own S3 bucket and specificying the key-pair you just made  
-* Run the command from the command line on your local machine where you installed elastic-mapreduce as outlined in the install guild above  
+* Run the command from the command line on your local machine where you installed elastic-mapreduce as outlined in the install guide above  
   
 ````
 ./elastic-mapreduce --create --alive --name "VelocityCluster" --enable-debugging \
@@ -36,7 +36,8 @@ Once the cluster has been spun up (around 10 - 20 min) you can access the machin
 ## Notes ##
 *****
 *   This is based on Amazon AMI image 2.4.2.  More current AMIs come with R 3.x preinstalled and will be looked at in the future
-*   Amazon Hadoop 1.0.3 comes with Google proto bufs 2.4.1.  This is based on Rhipe 0.74 which depends on proto bufs 2.4.1.  
+*   Amazon Hadoop 1.0.3 comes with Google proto bufs 2.4.1  
+*   This script uses Rhipe 0.74 which depends on proto bufs 2.4.1  
 *   Rhipe 0.75 is based on proto bufs 2.5.0 and initial testing was unsuccessful even with prot bufs 2.5 manually installed
 
 ## Known Issues ##
