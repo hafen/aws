@@ -1,4 +1,4 @@
-# Velocity Stack on Amazon EMR #
+# RHIPE / datadr / Trelliscope on Amazon EMR #
 ## Prereqs ##
 *****
 *   An Amazon AWS Account (EMR is not available with the free usage tier)  
@@ -14,7 +14,7 @@
 * Run the command from the command line on your local machine where you installed elastic-mapreduce as outlined in the install guide above  
   
 ````
-./elastic-mapreduce --create --alive --name "VelocityCluster" --enable-debugging \
+./elastic-mapreduce --create --alive --name "RhipeCluster" --enable-debugging \
 --num-instances 2 --slave-instance-type m1.large --master-instance-type m3.xlarge --ami-version "2.4.2" \
 --with-termination-protection \
 --key-pair <Your Key Pair> \
