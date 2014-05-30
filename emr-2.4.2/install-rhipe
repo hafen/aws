@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# RHIPE_VERSION=0.74.0
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-## need a home for RHIPE!
-# s3cmd --configure
-# s3cmd get s3://velocity1/Rhipe_0.75.0_hadoop-1.tar.gz
-echo "running wget"
 wget http://people.mozilla.com/~sguha/Rhipe_0.74.0_hadoop-1.tar.gz 
-echo "running R"
 R CMD INSTALL Rhipe_0.74.0_hadoop-1.tar.gz 

@@ -50,8 +50,3 @@ sudo mkdir -p /var/log/shiny-server
 sudo mkdir -p /srv/shiny-server
 sudo mkdir -p /var/lib/shiny-server
 sudo chown shiny /var/log/shiny-server
-
-# echo "starting shiny server"
-# sudo -u shiny nohup shiny-server &
-# echo "done"
-# exit

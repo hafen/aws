@@ -6,6 +6,7 @@
 *   Install the Amazon EMR CLI  
     *   http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-cli-install.html  
     *   Follow all the instructions!
+		*	This step will have you setup an s3 bucket and generate a key-pair that will be used below
 
 ## Instantiating a Cluster ##
 *****
@@ -25,14 +26,34 @@
 --bootstrap-action s3://elasticmapreduce/bootstrap-actions/run-if --args "instance.isMaster=true,s3://<bucket>/install-shiny-server" \
 --bootstrap-action "s3://<bucket>/install-protobuf" \
 --bootstrap-action "s3://<bucket>/install-rhipe" \
---bootstrap-action "s3://<bucket>/install-additional-pkgs"  
+--bootstrap-action "s3://<bucket>/install-additional-pkgs" \
+--bootstrap-action "s3://<bucket>/install-post-configure"  
 ````
 
 You can monitor the progress on the EMR console  
 https://console.aws.amazon.com/elasticmapreduce/vnext/home
   
+## Post Instantiation Configuration ##
+Currently there a few steps that have not been automated that need to be done manually when the cluster has finsishing provisioning  
 Once the cluster has been spun up (around 10 - 20 min) you can access the machine via ssh through the elastic-mapreduce cli  
 `./elastic-mapreduce --ssh -j <job id from previous command>`  
+	(if you are familiar with ec2 you can access the master via the ip address and pem as well)    
+`sudo -u shiny nohup shiny-server &`  
+`sudo -E -u hadoop /home/hadoop/bin/hadoop fs -mkdir /user/user3`  
+`sudo -E -u hadoop /home/hadoop/bin/hadoop fs -chmod -R 777 /`  
+
+## Accessing RStudio ##
+Find the master node in the EC2 instance list and select the security group  
+*	Edit inbound  
+*	Add custom TCP rule  
+*	port range = 8787  
+*	source = your IP address OR Anywhere  
+
+Using the IP address or public DNS (listed in the cluster details on the console page above) of the master node from a web browser navigate to http://[master ip address]:8787  
+login as user3/user3  
+
+## FAQ ##
+ 
 ## Notes ##
 *****
 *   This is based on Amazon AMI image 2.4.2.  More current AMIs come with R 3.x preinstalled and will be looked at in the future

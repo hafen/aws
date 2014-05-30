@@ -1,14 +1,6 @@
 #!/bin/bash
+
 ## rstudio ##
-echo "downloading rstudio"
 wget http://download2.rstudio.org/rstudio-server-0.98.507-amd64.deb
-echo $?
-echo "installing rstudio"
 sudo dpkg -i rstudio-server-0.98.507-amd64.deb
-echo $?
-echo "apt-get install for cleanup"
 sudo apt-get -f --force-yes --yes install
-echo $?	
-# echo "starting service"
-# sudo service rstudio-server start
-# echo $?
