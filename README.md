@@ -1,12 +1,18 @@
 # RHIPE / datadr / Trelliscope on Amazon EMR #
 ## Prereqs ##
 *****
+*   Comfortable installing software and using command line tools  
 *   An Amazon AWS Account (EMR is not available with the free usage tier)  
     *   http://aws.amazon.com/  
 *   Install the Amazon EMR CLI  
     *   http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-cli-install.html  
-    *   Follow all the instructions!
+    *   When setting up your account always use the same region (e.g. "us-east-1")
+    *   **Windows Users:**
+        *   If the link on Amazon to install Ruby is broken use this one: http://rubyinstaller.org/ 
+        *   The use of the Windows command prompt is required: http://windows.microsoft.com/en-us/windows-vista/open-a-command-prompt-window
+    *   **Follow all the instructions!**
 		*	This step will have you setup an s3 bucket and generate a key-pair that will be used below
+
 
 ## Instantiating a Cluster ##
 *****
@@ -35,30 +41,51 @@
 --bootstrap-action "s3://<bucket>/install-additional-pkgs" \
 --bootstrap-action "s3://<bucket>/install-post-configure"  
 ````
+  
+*   Windows Users:  
+    *   Run the command  
+    `ruby elastic-mapreduce <all the above arguments on a single line>`  
 
 You can monitor the progress on the EMR console  
 https://console.aws.amazon.com/elasticmapreduce/vnext/home
   
 ## Post Instantiation Configuration ##
+*****
 Currently there a few steps that have not been automated that need to be done manually when the cluster has finsishing provisioning  
 Once the cluster has been spun up (around 10 - 20 min) you can access the machine via ssh through the elastic-mapreduce cli  
 `./elastic-mapreduce --ssh -j <job id from previous command>`  
+
+*   Windows Users:
+    *   `ruby elastic-mapreduce -ssh -j <job id from previous command>`
 	(if you are familiar with ec2 you can access the master via the ip address and pem as well)    
+    
+*   All - Run the following on the master node after you have ssh'd in:  
 `sudo -u shiny nohup shiny-server &`  
 `sudo -E -u hadoop /home/hadoop/bin/hadoop fs -mkdir /user/user3`  
 `sudo -E -u hadoop /home/hadoop/bin/hadoop fs -chmod -R 777 /`  
 
-## Accessing RStudio ##
+### Open Ports ###
 Find the master node in the EC2 instance list and select the security group  
-*	Edit inbound  
-*	Add custom TCP rule  
-*	port range = 8787  
-*	source = your IP address OR Anywhere  
-Other Ports: 9100, 9103
+
+*	Edit "inbound"  
+*	Add "Custom TCP rule"  
+*	"port range" = 8787  
+*	"source" = your IP address OR Anywhere  
+
+Repeat for ports: 22, 9100, 9103  
+
+## Accessing RStudio ##
+*****
+
 Using the IP address or public DNS (listed in the cluster details on the console page above) of the master node from a web browser navigate to http://[master ip address]:8787  
 login as user3/user3  
 
-## FAQ ##
+## Common Problems ##
+*****
+*   Unable to ssh into master node:
+    *   Check that ssh port 22 is open in the security group for the master node as done above for rstudio
+    *   If using the elastic-mapreduce cli check that the credentials file has been setup and is named "credentials.json".  If using Windows, it may try to add a ".txt" extension to this file which will not work.
+    *   If the elastic-mapreduce cli cannot find the key-pair named in the credentials file, make sure on aws the key-pair is in the same region as specified in the credentials file
  
 ## Notes ##
 *****
