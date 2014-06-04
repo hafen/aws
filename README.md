@@ -16,7 +16,7 @@
 
 ## Instantiating a Cluster ##
 *****
-*   Do a `git clone` of this repo or download the files as a zip from this github site and unzip them
+*   Do a `git clone` of this repo or download the files as a zip (click the "Download ZIP" button on the right) from this github site and unzip them
 *   Upload all `emr-2.4.2/install-*` scripts to your S3 Bucket (ignore the Rhipe-*tar.gz)  
     *   This can be done through the AWS S3 web site
 *   Copy the command below to your favorite text editor then replace `<bucket>` with your own S3 bucket (and path if different) and specify the key-pair you just made in the Amazon EMR install guide  
