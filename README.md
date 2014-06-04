@@ -11,13 +11,13 @@
         *   If the link on Amazon to install Ruby is broken use this one: http://rubyinstaller.org/ 
         *   The use of the Windows command prompt is required: http://windows.microsoft.com/en-us/windows-vista/open-a-command-prompt-window
     *   **Follow all the instructions!**
-		*	This step will have you setup an s3 bucket and generate a key-pair that will be used below
+		*	This step will have you setup an S3 bucket and generate a key-pair that will be used below
 
 
 ## Instantiating a Cluster ##
 *****
 *   Do a `git clone` of this repo or download the files as a zip from this github site and unzip them
-*   Upload all emr-2.4.2/install-* scripts to your S3 Bucket (ignore the Rhipe-*tar.gz)  
+*   Upload all `emr-2.4.2/install-*` scripts to your S3 Bucket (ignore the Rhipe-*tar.gz)  
     *   This can be done through the AWS S3 web site
 *   Copy the command below to your favorite text editor then replace `<bucket>` with your own S3 bucket (and path if different) and specify the key-pair you just made in the Amazon EMR install guide  
 *   Run the command from the command line (or DOS Prompt) on your local machine where you installed elastic-mapreduce as outlined in the install guide above  
@@ -54,7 +54,7 @@ https://console.aws.amazon.com/elasticmapreduce/vnext/home
 ## Post Instantiation Configuration ##
 *****
 Currently there a few steps that have not been automated that need to be done manually when the cluster has finished provisioning  
-Once the cluster has been spun up (around 10 - 15 min) you can access the machine via ssh through the elastic-mapreduce cli  
+Once the cluster has been spun up (around 10 - 15 min) you can access the master node via ssh through the elastic-mapreduce CLI  
 
 *   Linux/Mac  
 `./elastic-mapreduce --ssh -j <job id from previous command>`  
@@ -76,20 +76,21 @@ From the AWS EC2 web site, find the master node in the EC2 instance list and sel
 *	"port range" = 8787  
 *	"source" = your IP address OR Anywhere  
 
-Repeat for ports: 22, 9100, 9103  
+Repeat for ports (check that the port are not already available first): 22, 9100, 9103  
 
 ## Accessing RStudio ##
 *****
 
-Using the IP address or public DNS (listed in the cluster details on the console page above) of the master node from a local web browser navigate to http://[master ip address]:8787  
+From your local machine, using the IP address or public DNS of the master node  (listed in the cluster details on the AWS EMR console page above) from a  web browser navigate to http://[master ip address]:8787  
 login as user3/user3  
 
 ## Common Problems ##
 *****
 *   Unable to ssh into master node:
-    *   Check that ssh port 22 is open in the security group for the master node as done above for rstudio
+    *   Verify that ssh port 22 is open in the security group for the master node as done above for rstudio above
     *   If using the elastic-mapreduce cli check that the credentials file has been setup and is named "credentials.json".  If using Windows, it may try to add a ".txt" extension to this file which will not work.
-    *   If the elastic-mapreduce cli cannot find the key-pair named in the credentials file, make sure on AWS the key-pair is in the same region as specified in the credentials file
+    *   If the elastic-mapreduce cli cannot find the key-pair named in the credentials file, make sure on AWS (EC2 -> key pair) the key-pair is in the same region as specified in the credentials file  
+*   Some corporate networks block Amazon AWS IP addresses. In this case you can only run R by ssh'ing in and running R from the command line or by using an alternate network  
  
 ## Notes ##
 *****
