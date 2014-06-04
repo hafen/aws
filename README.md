@@ -20,6 +20,12 @@
 --with-termination-protection \
 --key-pair <Your Key Pair> \
 --log-uri s3://<bucket>/logs \
+--bootstrap-action s3://elasticmapreduce/bootstrap-actions/configure-hadoop \
+--args "-m,mapred.reduce.tasks.speculative.execution=false" \
+--args "-m,mapred.map.tasks.speculative.execution=false" \
+--args "-m,mapred.map.child.java.opts=-Xmx1024m" \
+--args "-m,mapred.reduce.child.java.opts=-Xmx1024m" \
+--args "-m,mapred.job.reuse.jvm.num.tasks=1" \
 --bootstrap-action "s3://<bucket>/install-preconfigure" \
 --bootstrap-action "s3://<bucket>/install-r" \
 --bootstrap-action s3://elasticmapreduce/bootstrap-actions/run-if --args "instance.isMaster=true,s3://<bucket>/install-rstudio" \
@@ -48,7 +54,7 @@ Find the master node in the EC2 instance list and select the security group
 *	Add custom TCP rule  
 *	port range = 8787  
 *	source = your IP address OR Anywhere  
-
+Other Ports: 9100, 9103
 Using the IP address or public DNS (listed in the cluster details on the console page above) of the master node from a web browser navigate to http://[master ip address]:8787  
 login as user3/user3  
 

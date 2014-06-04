@@ -50,3 +50,9 @@ sudo mkdir -p /var/log/shiny-server
 sudo mkdir -p /srv/shiny-server
 sudo mkdir -p /var/lib/shiny-server
 sudo chown shiny /var/log/shiny-server
+
+#copy shiny examples
+sudo mkdir /srv/shiny-server/examples
+sudo cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/examples
+sudo chown -R shiny:shiny /srv/shiny-server/examples
+
