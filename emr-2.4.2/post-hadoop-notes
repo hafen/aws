@@ -1,7 +1,3 @@
-sudo -u shiny nohup shiny-server &
-sudo -E -u hadoop /home/hadoop/bin/hadoop fs -mkdir /user/user3
-sudo -E -u hadoop /home/hadoop/bin/hadoop fs -chmod -R 777 /
-
 
 # convert to CLI?
  rhmkdir("/user/user3/vastChallenge")
@@ -24,6 +20,22 @@ testing read on a subset... Error in as.POSIXlt.character(as.character(x), ...) 
   	  # sudo useradd -m bootcamp-user-$i
   	  # echo "bootcamp-user-$i:bootcamp-user-$i" | sudo chpasswd
   	  echo "bootcamp-user-$i:bootcamp-user-$i" 
+ sudo -E -u hadoop /home/hadoop/bin/hadoop fs -mkdir /user/user3
 
    done
   
+  
+  data:
+# wget https://s3-us-west-2.amazonaws.com/velocity1/vast-data/nf-week2.csv
+wget --no-check-certificate https://s3-us-west-2.amazonaws.com/velocity1/vast-data/nf-week2.csv
+wget --no-check-certificate https://s3-us-west-2.amazonaws.com/velocity1/vast-data/vastChallenge.R
+ 
+sudo -u shiny nohup shiny-server &
+sudo -E -u hadoop /home/hadoop/bin/hadoop fs -mkdir /user/user3
+sudo -E -u hadoop /home/hadoop/bin/hadoop fs -mkdir -p /data/vast/raw/nf
+sudo -E -u hadoop /home/hadoop/bin/hadoop fs -chmod -R 777 /	
+sudo -E -u hadoop /home/hadoop/bin/hadoop fs -put nf-week2.csv /data/vast/raw/nf
+
+# need to move file to user3
+# cybertools not installed
+# need to use updated bootscript
