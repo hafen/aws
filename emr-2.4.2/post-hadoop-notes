@@ -13,29 +13,30 @@ hadoop distcp s3n://velocity/vast-data/nf-week2.csv /user/user3/vastChallenge/da
 testing read on a subset... Error in as.POSIXlt.character(as.character(x), ...) : 
   character string is not in a standard unambiguous format
   
+  ## need to put this in a script
   #!/bin/bash
   USER_COUNT=25
   for i in $(eval echo "{1..$USER_COUNT}")
     do
-  	  # sudo useradd -m bootcamp-user-$i
-  	  # echo "bootcamp-user-$i:bootcamp-user-$i" | sudo chpasswd
+  	  sudo useradd -m bootcamp-user-$i
+  	  echo "bootcamp-user-$i:bootcamp-user-$i" | sudo chpasswd
   	  echo "bootcamp-user-$i:bootcamp-user-$i" 
- sudo -E -u hadoop /home/hadoop/bin/hadoop fs -mkdir /user/user3
+ 	  sudo -E -u hadoop /home/hadoop/bin/hadoop fs -mkdir /user/bootcamp-user-$i
 
    done
   
   
   data:
-# wget https://s3-us-west-2.amazonaws.com/velocity1/vast-data/nf-week2.csv
-wget --no-check-certificate https://s3-us-west-2.amazonaws.com/velocity1/vast-data/nf-week2.csv
-wget --no-check-certificate https://s3-us-west-2.amazonaws.com/velocity1/vast-data/vastChallenge.R
- 
+wget --no-check-certificate -O nf-week2-sample.csv https://s3-us-west-2.amazonaws.com/velocity1/vast-data/nf-week2.csv
+#wget --no-check-certificate https://s3-us-west-2.amazonaws.com/velocity1/vast-data/vastChallenge.R
+
+
 sudo -u shiny nohup shiny-server &
-sudo -E -u hadoop /home/hadoop/bin/hadoop fs -mkdir /user/user3
 sudo -E -u hadoop /home/hadoop/bin/hadoop fs -mkdir -p /data/vast/raw/nf
 sudo -E -u hadoop /home/hadoop/bin/hadoop fs -chmod -R 777 /	
 sudo -E -u hadoop /home/hadoop/bin/hadoop fs -put nf-week2.csv /data/vast/raw/nf
+chmod 755 nf-week2.csv
 
-# need to move file to user3
+
 # cybertools not installed
 # need to use updated bootscript
