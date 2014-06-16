@@ -1,4 +1,4 @@
-
+# https://github.com/tesseradata/example-vast-challenge/tree/gh-pages/bootcamp
 # convert to CLI?
  rhmkdir("/user/user3/vastChallenge")
 
@@ -32,11 +32,20 @@ wget --no-check-certificate -O nf-week2-sample.csv https://s3-us-west-2.amazonaw
 
 
 sudo -u shiny nohup shiny-server &
-sudo -E -u hadoop /home/hadoop/bin/hadoop fs -mkdir -p /data/vast/raw/nf
+sudo -E -u hadoop /home/hadoop/bin/
 sudo -E -u hadoop /home/hadoop/bin/hadoop fs -chmod -R 777 /	
 sudo -E -u hadoop /home/hadoop/bin/hadoop fs -put nf-week2.csv /data/vast/raw/nf
-chmod 755 nf-week2.csv
-
+chmod 755 nf-week2-sample.csv
+R
 
 # cybertools not installed
 # need to use updated bootscript
+
+### commands I ran ###
+   19  echo "hadoop:hadoop" | sudo chpasswd
+   20  sudo -u shiny nohup shiny-server &
+   21  hadoop fs -mkdir /tmp
+   22  hadoop fs -mkdir /user/hadoop/vast/raw/nf
+   23  hadoop fs -ls /user/hadoop
+   24  wget --no-check-certificate -O nf-week2-sample.csv https://s3-us-west-2.amazonaws.com/velocity1/vast-data/nf-week2.csv
+   25  hadoop fs -put nf-week2-sample.csv /user/hadoop/vast/raw/nf

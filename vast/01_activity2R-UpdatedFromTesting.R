@@ -10,25 +10,25 @@
 # load required packages and initialize Rhipe
 #!! added these two 
 library(devtools)
-install_github("vastChallenge", "hafen", subdir = "package")
-
+# install_github("vastChallenge", "hafen", subdir = "package")
+install_github("example-vast-challenge", "tesseradata", subdir = "package", ref = "gh-pages")
 library(datadr)
 library(Rhipe)
 library(cyberTools)
 rhinit()
 # set Rhipe runner (specific to this cluster)
 #!! did not use
-rhoptions(runner = "/share/apps/R/3.0.2/bin/R CMD /share/apps/R/3.0.2/lib64/R/library/Rhipe/bin/RhipeMapReduce --slave --silent --vanilla")
+#rhoptions(runner = "/share/apps/R/3.0.2/bin/R CMD /share/apps/R/3.0.2/lib64/R/library/Rhipe/bin/RhipeMapReduce --slave --silent --vanilla")
 
 # set time zone to "UTC" for use with dates in the data
 Sys.setenv(TZ = "UTC")
 
 # set working directories on local machine and HDFS
 #!! changed dir
-setwd("/home/hadoop")
+setwd("/home/vagrant")
 # change "hafe647" to your username
 #!! changed dir
-hdfs.setwd("/data/vast")
+hdfs.setwd("/user/hadoop/vast")
 
 # make sure data sample is present locally
 list.files(pattern=".csv")
@@ -56,6 +56,7 @@ str(nfHead)
 #!! Error in as.POSIXlt.character(x, tz, ...) : character string is not in a standard unambiguous format
 #!! added as.double
 nfHead$date <- as.POSIXct(as.double(nfHead$TimeSeconds), origin = "1970-01-01", tz = "UTC")
+
 # remove old time variables
 nfHead <- nfHead[,setdiff(names(nfHead), c("TimeSeconds", "parsedDate"))]
 
